@@ -6,7 +6,7 @@ import Dict
 
 
 import Styles exposing (..)
-import Events exposing (onDragStart, onDragOver, onDragEnd)
+--import Events exposing (onDragStart, onDragOver, onDragEnd)
 
 
 
@@ -51,19 +51,61 @@ type Move = Moving Position Position
 
 model =
     { board = 
-        List.map2 (++)
-            [ "A", "B", "C", "D", "E", "F", "G", "H" ]
-            [ "1", "2", "3", "4", "5", "6", "7", "8" ]
+        allCellPositions
         |> List.map (\pos -> (pos, Cell Nothing))
         |> Dict.fromList
         |> Dict.insert "C4" (Cell <| Just <| Piece White Knight)
+    , isMoving =
+        Nothing
     }
 
+allCellPositions : List Position
+allCellPositions =
+    List.map2 (++)
+        [ "A", "B", "C", "D", "E", "F", "G", "H" ]
+        [ "1", "2", "3", "4", "5", "6", "7", "8" ]
 
+whiteCells : List Position
+whiteCells =
+    allCellPositions
+    |> List.indexedMap (\i pos -> (i, pos))
+    |> List.filterMap (\(i, pos) -> if isEven i then Just pos else Nothing)
 
 
 --- UPDATE
 
 
 type Msg =
+    NoOp
+
+
+
+update : Msg -> Model -> Model
+update msg model =
+    case msg of
+        NoOp ->
+            model
+
+
+
+
+--- VIEW
+view : Model -> Html Msg
+view model =
+    div 
+        [ style Styles.maindiv ]
+        <| List.map (viewCell model.isMoving) <| Dict.toList model.board
+
+
+viewCell : Maybe Move -> (Position, Cell) -> Html Msg
+viewCell move (pos, cell) =
+    div
+        []
+        [ text pos ]
+
+
+
+-- viewhelpers
+whiteCells : List Position
+whiteCells =
 
