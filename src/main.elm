@@ -6,7 +6,7 @@ import Dict exposing (Dict)
 
 
 import Styles exposing (..)
---import Events exposing (onDragStart, onDragOver, onDragEnd)
+--import DragEvents exposing (onDragStart, onDragOver, onDragEnd)
 
 
 
@@ -75,7 +75,7 @@ blackCells : List Position
 blackCells =
     allCellPositions
     |> List.indexedMap (\i pos -> (i, pos))
-    |> List.filterMap (\(i, pos) -> if i % 2 == 0 then Just pos else Nothing)
+    |> List.filterMap (\(i, pos) -> if (i + i // 8) % 2 == 0 then Just pos else Nothing)
 
 
 --- UPDATE
@@ -105,6 +105,32 @@ view model =
 
 viewCell : Maybe Move -> (Position, Cell) -> Html Msg
 viewCell move (pos, cell) =
-    div
-        [ style Styles.celldiv ]
-        [ text pos ]
+    let
+        cellColor =
+            if List.member pos blackCells then
+                Styles.black
+            else
+                Styles.white
+    in
+        div
+            [ style <| Styles.celldiv ++ cellColor ]
+            [ case cell.occupiedBy of
+                Just piece ->
+                    viewPiece move pos piece
+
+                Nothing ->
+                    text ""
+            ]
+
+viewPiece : Maybe Move -> Position -> Piece -> Html Msg
+viewPiece move pos piece =
+    div 
+        [ style Styles.piece ]
+        [ text <| symbolFrom piece ]
+
+
+
+symbolFrom : Piece -> String
+symbolFrom piece =
+    case piece.role of
+        Knight -> "♞"
