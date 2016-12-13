@@ -1,8 +1,8 @@
 {- Example implementation of Drag and Drop using Html5 events
 -}
-import Html exposing (beginnerProgram, Program, Html, div, p, h2, text)
+import Html exposing (beginnerProgram, Html, div, p, h2, text)
 import Html.Attributes exposing (style)
-import Dict
+import Dict exposing (Dict)
 
 
 import Styles exposing (..)
@@ -15,10 +15,11 @@ import Styles exposing (..)
 
 main : Program Never Model Msg
 main =
-    { model = model 
-    , update = update 
-    , view = view
-    }
+    beginnerProgram
+        { model = model 
+        , update = update 
+        , view = view
+        }
 
 
 
@@ -61,15 +62,20 @@ model =
 
 allCellPositions : List Position
 allCellPositions =
-    List.map2 (++)
-        [ "A", "B", "C", "D", "E", "F", "G", "H" ]
-        [ "1", "2", "3", "4", "5", "6", "7", "8" ]
+    [ "A", "B", "C", "D", "E", "F", "G", "H" ]
+    |> List.map 
+        (\l -> 
+            List.map 
+                (\n -> l ++ n)
+                [ "1", "2", "3", "4", "5", "6", "7", "8" ]
+        )
+    |> List.concat
 
-whiteCells : List Position
-whiteCells =
+blackCells : List Position
+blackCells =
     allCellPositions
     |> List.indexedMap (\i pos -> (i, pos))
-    |> List.filterMap (\(i, pos) -> if isEven i then Just pos else Nothing)
+    |> List.filterMap (\(i, pos) -> if i % 2 == 0 then Just pos else Nothing)
 
 
 --- UPDATE
@@ -100,12 +106,5 @@ view model =
 viewCell : Maybe Move -> (Position, Cell) -> Html Msg
 viewCell move (pos, cell) =
     div
-        []
+        [ style Styles.celldiv ]
         [ text pos ]
-
-
-
--- viewhelpers
-whiteCells : List Position
-whiteCells =
-
