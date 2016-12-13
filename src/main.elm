@@ -1,7 +1,7 @@
 {- Example implementation of Drag and Drop using Html5 events
 -}
 import Html exposing (beginnerProgram, Html, div, p, h2, text)
-import Html.Attributes exposing (style)
+import Html.Attributes exposing (style, attribute)
 import Dict exposing (Dict)
 
 
@@ -124,9 +124,27 @@ viewCell move (pos, cell) =
 
 viewPiece : Maybe Move -> Position -> Piece -> Html Msg
 viewPiece move pos piece =
-    div 
-        [ style Styles.piece ]
-        [ text <| symbolFrom piece ]
+    let
+        isMoving =
+            case move of
+                Just (Moving fromPos _) ->
+                    fromPos == pos
+
+                Nothing ->
+                    False
+
+        moveStyle =
+            if isMoving then
+                [("opacity","0.1")]
+            else
+                []
+
+    in
+        div 
+            [ style <| Styles.piece ++ moveStyle
+            , attribute "draggable" "true"
+            ]
+            [ text <| symbolFrom piece ]
 
 
 
