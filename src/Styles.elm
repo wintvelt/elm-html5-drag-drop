@@ -28,7 +28,7 @@ disk =
     [ ( "width", "80px" )
     , ( "height", "20px" )
     , ( "margin", "2px" )
-    , ( "background-color", "lightblue" )
+    , ( "background-color", "#03A9F4" )
     , ( "user-select", "none" )
     , ( "border-radius", "2px" )
     , ( "box-shadow", "0 2px 4px rgba(0,0,0,.17)" )
@@ -39,7 +39,7 @@ pole : StyleList
 pole =
     [ ( "width", "16px" )
     , ( "height", "200px" )
-    , ( "background-color", "#795548" )
+    , ( "background-color", "#3E2723" )
     , ( "border-radius", "8px 8px 0 0" )
     , ( "position", "absolute" )
     , ( "bottom", "0" )
