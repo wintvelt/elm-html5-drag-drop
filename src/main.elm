@@ -1,6 +1,7 @@
 {- Example implementation of Drag and Drop using Html5 events
 -}
 import Html exposing (beginnerProgram, Html, div, p, h2, text)
+import Html.Keyed as Keyed
 import Html.Attributes exposing (style, attribute)
 import Html.Events exposing (onClick)
 import Dict exposing (Dict)
@@ -8,7 +9,7 @@ import Dict exposing (Dict)
 
 import Styles
 import Hanoi
---import DragEvents exposing (onDragStart, onDragOver, onDragEnd)
+import DragEvents exposing (onDragStart, onDragOver, onDragEnd)
 
 
 
@@ -50,6 +51,7 @@ model =
 type Msg
     = Move Hanoi.Disk
     | MoveTo Hanoi.Pole
+    | CancelMove
 
 
 update : Msg -> Model -> Model
@@ -72,15 +74,19 @@ update msg model =
                 , movingDisk = Nothing
                 }
 
+        CancelMove ->
+            { model | movingDisk = Nothing }
+
 
 --- VIEW
 view : Model -> Html Msg
 view model =
-    div [ style Styles.mainDiv ] <|
+    Keyed.node "div" 
+        [ style Styles.mainDiv ] <|
         List.indexedMap (viewColumn model) model.poles
 
 
-viewColumn : Model -> Hanoi.Pole -> List Hanoi.Disk -> Html Msg
+viewColumn : Model -> Hanoi.Pole -> List Hanoi.Disk -> (String, Html Msg)
 viewColumn model pole diskList =
     let
         isDroppable =
@@ -91,24 +97,31 @@ viewColumn model pole diskList =
         ( droppableStyles, droppableAttr ) =
             if isDroppable then
                 ( [ ( "background-color", "#7CB342" ) ]
-                , [ onClick <| MoveTo pole ]
+                ,   [ onClick <| MoveTo pole ]
                 )
             else
                 ( [], [] )
     in
-        div
+        ( toString pole
+        , Keyed.node "div"
             ([ style Styles.column ]
                 ++ droppableAttr
             )
-        <|
-            [ div
-                [ style <| Styles.pole ++ droppableStyles ]
-                []
+            <|
+            [   ( "pole" 
+                , div
+                    [ style <| Styles.pole ++ droppableStyles 
+                            , attribute "draggable" "true"
+                            , onDragStart <| Move 0
+                    ]
+                    []
+                )
             ]
                 ++ List.indexedMap (viewDisk model) diskList
+        )
 
 
-viewDisk : Model -> Int -> Hanoi.Disk -> Html Msg
+viewDisk : Model -> Int -> Hanoi.Disk -> (String, Html Msg)
 viewDisk model idx disk =
     let
         width =
@@ -122,15 +135,27 @@ viewDisk model idx disk =
                 Nothing ->
                     if idx == 0 && Hanoi.canMove disk model.poles then
                         ( [ ( "background-color", "#7CB342" ) ]
-                        , [ onClick <| Move disk ]
+                        ,   [ onClick <| Move disk 
+                            , attribute "draggable" "true"
+                            , onDragStart <| Move disk
+                            ]
                         )
                     else
                         ( [], [] )
 
                 Just movingDisk ->
-                    ( [], [] )
+                    if disk == movingDisk then
+                        ( [ ("opacity","0.8") ]
+                        ,   [ attribute "draggable" "true"
+                            , onDragStart <| Move disk
+                            , onDragEnd CancelMove
+                            ] 
+                        )
+                    else
+                        ( [], [] )
     in
-        div
+        ( toString disk
+        , div
             ([ style <|
                 Styles.disk
                     ++ widthStyles
@@ -139,3 +164,4 @@ viewDisk model idx disk =
                 ++ moveableAttr
             )
             [ text <| toString disk ]
+        )
