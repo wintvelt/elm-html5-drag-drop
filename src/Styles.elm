@@ -4,10 +4,11 @@ module Styles exposing (..)
 
 type alias StyleList = List (String, String)
 
-main : StyleList
-main =
+mainDiv : StyleList
+mainDiv =
     [ ( "display", "flex" )
     , ( "width", "420px" )
+    , ( "margin", "auto" )
     , ( "height", "300px" )
     , ( "align-items", "flex-end" )
     ]

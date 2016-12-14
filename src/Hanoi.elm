@@ -1,18 +1,12 @@
 module Hanoi exposing 
-    ( Model, Poles, Pole, Disk
-    , moveDisk, canMove, isDroppable
+    ( Poles, Pole, Disk
+    , moveDisk, canMove, isDroppableOn
     )
 {- Model, update and view helpers for Towers of Hanoi Game
 -}
 
 
----- MODEL
-
-
-type alias Model =
-    { poles : Poles
-    , movingDisk : Maybe Disk
-    }
+---- MODEL Helpers
 
 type alias Poles =
     List (List Disk)
@@ -60,7 +54,7 @@ canMove : Disk -> Poles -> Bool
 canMove disk poles =
     poles
         |> List.map List.head
-        |> List.foldl canMoveHelper False
+        |> List.foldl (canMoveHelper disk) False
 
 canMoveHelper : Disk -> Maybe Disk -> Bool -> Bool
 canMoveHelper disk topOfPole previous =
@@ -78,9 +72,9 @@ canMoveHelper disk topOfPole previous =
 {- Checks if a moving disk can be dropped on a disklist
 True if list is empty or if top of list is larger than moving disk
 -}
-isDroppable : Disk -> List Disk -> Bool
-isDroppable movingDisk disksOnPole =
-    List.head diskList
+isDroppableOn : List Disk -> Disk -> Bool
+isDroppableOn disksOnPole movingDisk =
+    List.head disksOnPole
         |> Maybe.map (\top -> top > movingDisk)
         |> Maybe.withDefault True
 

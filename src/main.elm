@@ -2,10 +2,12 @@
 -}
 import Html exposing (beginnerProgram, Html, div, p, h2, text)
 import Html.Attributes exposing (style, attribute)
+import Html.Events exposing (onClick)
 import Dict exposing (Dict)
 
 
-import Styles exposing (..)
+import Styles
+import Hanoi
 --import DragEvents exposing (onDragStart, onDragOver, onDragEnd)
 
 
@@ -28,127 +30,112 @@ main =
 --- MODEL
 
 type alias Model =
-    { board : Board
-    , isMoving : Maybe Move
+    { poles : Hanoi.Poles
+    , movingDisk : Maybe Hanoi.Disk
     }
 
-type alias Board = Dict Position Cell
-
-type alias Position = String
-
-type alias Cell =
-    { occupiedBy : Maybe Piece 
-    }
-
-type alias Piece =
-    { color : Color 
-    , role : Role
-    }
-
-type Color = Black | White
-type Role = Knight
-
-type Move = Moving Position Position
-
+model : Model
 model =
-    { board = 
-        allCellPositions
-        |> List.map (\pos -> (pos, Cell Nothing))
-        |> Dict.fromList
-        |> Dict.insert "C4" (Cell <| Just <| Piece White Knight)
-    , isMoving =
-        Nothing
+    { poles =
+        [ List.range 0 6
+        , [  ]
+        , [  ]
+        ]
+    , movingDisk = Nothing
     }
-
-allCellPositions : List Position
-allCellPositions =
-    [ "A", "B", "C", "D", "E", "F", "G", "H" ]
-    |> List.map 
-        (\l -> 
-            List.map 
-                (\n -> l ++ n)
-                [ "1", "2", "3", "4", "5", "6", "7", "8" ]
-        )
-    |> List.concat
-
-blackCells : List Position
-blackCells =
-    allCellPositions
-    |> List.indexedMap (\i pos -> (i, pos))
-    |> List.filterMap (\(i, pos) -> if (i + i // 8) % 2 == 0 then Just pos else Nothing)
-
 
 --- UPDATE
 
 
-type Msg =
-    NoOp
-
+type Msg
+    = Move Hanoi.Disk
+    | MoveTo Hanoi.Pole
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        NoOp ->
-            model
+        Move disk ->
+            { model | movingDisk = Just disk }
 
-
+        MoveTo newPole ->
+            let
+                newPoles =
+                    model.movingDisk
+                        |> Maybe.map 
+                            (\movingDisk -> Hanoi.moveDisk movingDisk newPole model.poles)
+                        |> Maybe.withDefault
+                            model.poles
+            in
+                { model
+                | poles = newPoles
+                , movingDisk = Nothing
+                }
 
 
 --- VIEW
 view : Model -> Html Msg
 view model =
-    div 
-        [ style Styles.maindiv ]
-        <| List.map (viewCell model.isMoving) <| Dict.toList model.board
+    div [ style Styles.mainDiv ] <|
+        List.indexedMap (viewColumn model) model.poles
 
 
-viewCell : Maybe Move -> (Position, Cell) -> Html Msg
-viewCell move (pos, cell) =
+viewColumn : Model -> Hanoi.Pole -> List Hanoi.Disk -> Html Msg
+viewColumn model pole diskList =
     let
-        cellColor =
-            if List.member pos blackCells then
-                Styles.black
+        isDroppable =
+            model.movingDisk
+                |> Maybe.map (Hanoi.isDroppableOn diskList)
+                |> Maybe.withDefault False
+
+        ( droppableStyles, droppableAttr ) =
+            if isDroppable then
+                ( [ ( "background-color", "#7CB342" ) ]
+                , [ onClick <| MoveTo pole ]
+                )
             else
-                Styles.white
+                ( [], [] )
     in
         div
-            [ style <| Styles.celldiv ++ cellColor ]
-            [ case cell.occupiedBy of
-                Just piece ->
-                    viewPiece move pos piece
-
-                Nothing ->
-                    text ""
-            ]
-
-viewPiece : Maybe Move -> Position -> Piece -> Html Msg
-viewPiece move pos piece =
-    let
-        isMoving =
-            case move of
-                Just (Moving fromPos _) ->
-                    fromPos == pos
-
-                Nothing ->
-                    False
-
-        moveStyle =
-            if isMoving then
-                [("opacity","0.1")]
-            else
+            ([ style Styles.column ]
+                ++ droppableAttr
+            )
+        <|
+            [ div
+                [ style <| Styles.pole ++ droppableStyles ]
                 []
-
-    in
-        div 
-            [ style <| Styles.piece ++ moveStyle
-            , attribute "draggable" "true"
             ]
-            [ text <| symbolFrom piece ]
+                ++ List.indexedMap (viewDisk model) diskList
 
 
+viewDisk : Model -> Int -> Hanoi.Disk -> Html Msg
+viewDisk model idx disk =
+    let
+        width =
+            20 * disk + 40
 
-symbolFrom : Piece -> String
-symbolFrom piece =
-    case piece.role of
-        Knight -> "♞"
+        widthStyles =
+            [ ( "width", toString width ++ "px" ) ]
+
+        ( moveableStyles, moveableAttr ) =
+            case model.movingDisk of
+                Nothing ->
+                    if idx == 0 && Hanoi.canMove disk model.poles then
+                        ( [ ( "background-color", "#7CB342" ) ]
+                        , [ onClick <| Move disk ]
+                        )
+                    else
+                        ( [], [] )
+
+                Just movingDisk ->
+                    ( [], [] )
+    in
+        div
+            ([ style <|
+                Styles.disk
+                    ++ widthStyles
+                    ++ moveableStyles
+             ]
+                ++ moveableAttr
+            )
+            [ text <| toString disk ]
