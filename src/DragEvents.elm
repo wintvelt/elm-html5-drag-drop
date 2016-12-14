@@ -26,7 +26,7 @@ onDrag message =
 -- when this element is no longer being dragged
 onDragEnd : msg -> Attribute msg
 onDragEnd message =
-    onDragHelper "dragend" message
+    onPreventHelper "dragend" message
 
 -- when another dragged element enters this element
 onDragEnter : msg -> Attribute msg
@@ -36,7 +36,7 @@ onDragEnter message =
 -- when another dragged element is over this element (fired multiple times during drag)
 onDragOver : msg -> Attribute msg
 onDragOver message =
-    onDragHelper "dragover" message
+    onPreventHelper "dragover" message
 
 
 -- when another dragged element leaves this element (moved outside border)
@@ -47,13 +47,22 @@ onDragLeave message =
 -- when another dragged element is dropped over this element
 onDrop : msg -> Attribute msg
 onDrop message =
-    onDragHelper "drop" message
+    onPreventHelper "drop" message
 
 
 
--- helper
+-- helpers
 onDragHelper : String -> msg -> Attribute msg
 onDragHelper eventName message =
+    onWithOptions
+        eventName
+        { preventDefault = False 
+        , stopPropagation = False
+        }
+        (JD.succeed message)
+
+onPreventHelper : String -> msg -> Attribute msg
+onPreventHelper eventName message =
     onWithOptions
         eventName
         { preventDefault = True 
