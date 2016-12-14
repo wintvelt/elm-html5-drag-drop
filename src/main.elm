@@ -110,10 +110,7 @@ viewColumn model pole diskList =
             <|
             [   ( "pole" 
                 , div
-                    [ style <| Styles.pole ++ droppableStyles 
-                            , attribute "draggable" "true"
-                            , onDragStart <| Move 0
-                    ]
+                    [ style <| Styles.pole ++ droppableStyles ]
                     []
                 )
             ]
