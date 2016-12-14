@@ -2,34 +2,46 @@ module Styles exposing (..)
 {- Styles to use in examples
 -}
 
-maindiv = 
-    [ ("margin", "16px")
-    , ("width","384px")
-    , ("box-sizing","content-box")
-    , ("border", "1px solid grey")
-    , ("display","flex")
-    , ("flex-wrap","wrap-reverse")
+type alias StyleList = List (String, String)
+
+main : StyleList
+main =
+    [ ( "display", "flex" )
+    , ( "width", "420px" )
+    , ( "height", "300px" )
+    , ( "align-items", "flex-end" )
     ]
 
-celldiv =
-    [ ("padding","8px")
-    , ("width","48px")
-    , ("height","48px")
-    , ("border-radius","2px")
-    , ("box-sizing","border-box")
-    , ("user-select","none")
-    , ("display","flex")
-    , ("align-items","center")
-    , ("justify-content","center")
+
+column : StyleList
+column =
+    [ ( "flex", "0 0 180px" )
+    , ( "display", "flex" )
+    , ( "flex-direction", "column" )
+    , ( "align-items", "center" )
+    , ( "justify-content", "center" )
+    , ( "position", "relative" )
     ]
 
-black =
-    [ ("background-color","lightgrey") ]
+disk : StyleList
+disk =
+    [ ( "width", "80px" )
+    , ( "height", "20px" )
+    , ( "margin", "2px" )
+    , ( "background-color", "lightblue" )
+    , ( "user-select", "none" )
+    , ( "border-radius", "2px" )
+    , ( "box-shadow", "0 2px 4px rgba(0,0,0,.17)" )
+    , ( "z-index", "1" )
+    ]
 
-white =
-    [ ("background-color","white") ]
-
-piece =
-    [ ("font-size","32px") 
-    , ("cursor","pointer")
+pole : StyleList
+pole =
+    [ ( "width", "16px" )
+    , ( "height", "200px" )
+    , ( "background-color", "#795548" )
+    , ( "border-radius", "8px 8px 0 0" )
+    , ( "position", "absolute" )
+    , ( "bottom", "0" )
+    , ( "left", "82px" )
     ]
