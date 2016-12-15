@@ -9,7 +9,7 @@ import Dict exposing (Dict)
 
 import Styles
 import Hanoi
-import DragEvents exposing (onDragStart, onDragOver, onDragEnd)
+import DragEvents exposing (onDragStart, onDragOver, onDragEnd, onDrop)
 
 
 
@@ -81,12 +81,12 @@ update msg model =
 --- VIEW
 view : Model -> Html Msg
 view model =
-    Keyed.node "div" 
+    div 
         [ style Styles.mainDiv ] <|
         List.indexedMap (viewColumn model) model.poles
 
 
-viewColumn : Model -> Hanoi.Pole -> List Hanoi.Disk -> (String, Html Msg)
+viewColumn : Model -> Hanoi.Pole -> List Hanoi.Disk -> Html Msg
 viewColumn model pole diskList =
     let
         isDroppable =
@@ -97,28 +97,27 @@ viewColumn model pole diskList =
         ( droppableStyles, droppableAttr ) =
             if isDroppable then
                 ( [ ( "background-color", "#7CB342" ) ]
-                ,   [ onClick <| MoveTo pole ]
+                ,   [ onClick <| MoveTo pole 
+                    , attribute "ondragenter" "return false"
+                    , onDrop <| MoveTo pole
+                    ]
                 )
             else
                 ( [], [] )
     in
-        ( toString pole
-        , Keyed.node "div"
+        div
             ([ style Styles.column ]
                 ++ droppableAttr
             )
             <|
-            [   ( "pole" 
-                , div
+            [   div
                     [ style <| Styles.pole ++ droppableStyles ]
                     []
-                )
             ]
                 ++ List.indexedMap (viewDisk model) diskList
-        )
 
 
-viewDisk : Model -> Int -> Hanoi.Disk -> (String, Html Msg)
+viewDisk : Model -> Int -> Hanoi.Disk -> Html Msg
 viewDisk model idx disk =
     let
         width =
@@ -142,17 +141,15 @@ viewDisk model idx disk =
 
                 Just movingDisk ->
                     if disk == movingDisk then
-                        ( [ ("opacity","0.8") ]
+                        ( [ ("opacity","0") ]
                         ,   [ attribute "draggable" "true"
-                            , onDragStart <| Move disk
-                            , onDragEnd CancelMove
+                            , onDragEnd <| CancelMove
                             ] 
                         )
                     else
                         ( [], [] )
     in
-        ( toString disk
-        , div
+        div
             ([ style <|
                 Styles.disk
                     ++ widthStyles
@@ -161,4 +158,3 @@ viewDisk model idx disk =
                 ++ moveableAttr
             )
             [ text <| toString disk ]
-        )

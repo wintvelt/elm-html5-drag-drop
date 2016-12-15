@@ -26,7 +26,7 @@ onDrag message =
 -- when this element is no longer being dragged
 onDragEnd : msg -> Attribute msg
 onDragEnd message =
-    onPreventHelper "dragend" message
+    onDragHelper "dragend" message
 
 -- when another dragged element enters this element
 onDragEnter : msg -> Attribute msg
