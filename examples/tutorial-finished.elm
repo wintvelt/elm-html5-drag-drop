@@ -141,7 +141,7 @@ viewDisk model idx disk =
 
                 Just movingDisk ->
                     if disk == movingDisk then
-                        ( [ ("opacity","0") ]
+                        ( [ ("opacity","0.1") ]
                         ,   [ attribute "draggable" "true"
                             , onDragEnd <| CancelMove
                             ] 
