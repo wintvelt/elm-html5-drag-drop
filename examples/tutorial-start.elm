@@ -3,7 +3,6 @@
 import Html exposing (beginnerProgram, Html, div, p, h2, text)
 import Html.Keyed as Keyed
 import Html.Attributes exposing (style, attribute)
-import Html.Events exposing (onClick)
 import Dict exposing (Dict)
 
 
@@ -45,40 +44,18 @@ model =
     , movingDisk = Nothing
     }
 
-
-
 --- UPDATE
 
 
 type Msg
-    = Move Hanoi.Disk
-    | MoveTo Hanoi.Pole
-    | CancelMove
+    = NoOp
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Move selectedDisk ->
-            { model | movingDisk = Just selectedDisk }
-
-        MoveTo newPole ->
-            let
-                newPoles =
-                    model.movingDisk
-                        |> Maybe.map 
-                            (\movingDisk -> Hanoi.moveDisk movingDisk newPole model.poles)
-                        |> Maybe.withDefault
-                            model.poles
-            in
-                { model
-                | poles = newPoles
-                , movingDisk = Nothing
-                }
-
-        CancelMove ->
-            { model | movingDisk = Nothing }
-
+        NoOp ->
+            model
 
 --- VIEW
 view : Model -> Html Msg
@@ -100,10 +77,7 @@ viewPole model pole diskList =
         ( droppableStyles, droppableAttr ) =
             if isDroppable then
                 ( [ ( "background-color", "#7CB342" ) ]
-                ,   [ onClick <| MoveTo pole 
-                    , attribute "ondragover" "return false"
-                    , onDrop <| MoveTo pole
-                    ]
+                , [] -- Add event handlers for the pole here
                 )
             else
                 ( [], [] )
@@ -135,11 +109,8 @@ viewDisk model idx disk =
                     -- if there is no moving disk yet, and this is top disk, 
                     -- and there are valid moves to other poles, then we're good
                     if idx == 0 && Hanoi.canMove disk model.poles then
-                        ( [ ( "background-color", "#7CB342" ) ]
-                        ,   [ onClick <| Move disk 
-                            , attribute "draggable" "true"
-                            , onDragStart <| Move disk
-                            ]
+                        (   [ ( "background-color", "#7CB342" ) ]
+                        ,   [] -- add your (drag) events and attributes here
                         )
                     else
                         ( [], [] )
@@ -147,10 +118,8 @@ viewDisk model idx disk =
                 Just movingDisk ->
                     if disk == movingDisk then
                         -- this is the moving disk
-                        ( [ ("opacity","0.1") ]
-                        ,   [ attribute "draggable" "true"
-                            , onDragEnd <| CancelMove
-                            ] 
+                        (   [ ("opacity","0.1") ]
+                        ,   [] -- add your drag events and attributes here
                         )
                     else
                         ( [], [] )
