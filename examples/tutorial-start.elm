@@ -118,7 +118,7 @@ viewDisk model idx disk =
                 Just movingDisk ->
                     if disk == movingDisk then
                         -- this is the moving disk
-                        (   [ ("opacity","0.1") ]
+                        (   []
                         ,   [] -- add your drag events and attributes here
                         )
                     else
