@@ -98,7 +98,7 @@ viewColumn model pole diskList =
             if isDroppable then
                 ( [ ( "background-color", "#7CB342" ) ]
                 ,   [ onClick <| MoveTo pole 
-                    , attribute "ondragenter" "return false"
+                    , attribute "ondragover" "return false"
                     , onDrop <| MoveTo pole
                     ]
                 )
