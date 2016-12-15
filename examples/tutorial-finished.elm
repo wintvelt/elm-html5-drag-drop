@@ -100,8 +100,7 @@ viewPole model pole diskList =
         ( droppableStyles, droppableAttr ) =
             if isDroppable then
                 ( [ ( "background-color", "#7CB342" ) ]
-                ,   [ onClick <| MoveTo pole 
-                    , attribute "ondragover" "return false"
+                ,   [ attribute "ondragover" "return false"
                     , onDrop <| MoveTo pole
                     ]
                 )
@@ -136,8 +135,7 @@ viewDisk model idx disk =
                     -- and there are valid moves to other poles, then we're good
                     if idx == 0 && Hanoi.canMove disk model.poles then
                         ( [ ( "background-color", "#7CB342" ) ]
-                        ,   [ onClick <| Move disk 
-                            , attribute "draggable" "true"
+                        ,   [ attribute "draggable" "true"
                             , onDragStart <| Move disk
                             ]
                         )
