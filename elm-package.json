@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "summary": "Event module for HTML5 drag and drop, with tutorial",
-    "repository": "https://github.com/wintvelt/elm-html5-drag-drop",
+    "repository": "https://github.com/wintvelt/elm-html5-drag-drop.git",
     "license": "BSD3",
     "source-directories": [
         "src"
