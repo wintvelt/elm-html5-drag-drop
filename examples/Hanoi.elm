@@ -1,4 +1,4 @@
-module Hanoi exposing 
+module Examples.Hanoi exposing 
     ( Poles, Pole, Disk
     , moveDisk, canMove, isDroppableOn
     )

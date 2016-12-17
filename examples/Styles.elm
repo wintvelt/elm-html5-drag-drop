@@ -1,4 +1,4 @@
-module Styles exposing (..)
+module Examples.Styles exposing (..)
 {- Styles to use in examples
 -}
 

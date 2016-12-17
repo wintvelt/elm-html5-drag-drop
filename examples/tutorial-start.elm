@@ -6,8 +6,8 @@ import Html.Attributes exposing (style, attribute)
 import Dict exposing (Dict)
 
 
-import Styles
-import Hanoi
+import Examples.Styles as Styles
+import Examples.Hanoi as Hanoi
 import DragEvents exposing (onDragStart, onDragOver, onDragEnd, onDrop)
 
 
