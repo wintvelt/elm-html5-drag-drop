@@ -110,7 +110,7 @@ viewDisk model idx disk =
                     -- and there are valid moves to other poles, then we're good
                     if idx == 0 && Hanoi.canMove disk model.poles then
                         (   [ ( "background-color", "#7CB342" ) ]
-                        ,   [] -- add your (drag) events and attributes here
+                        ,   [ ] -- add your (drag) events and attributes here
                         )
                     else
                         ( [], [] )

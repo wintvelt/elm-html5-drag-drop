@@ -52,8 +52,8 @@ model =
 
 type Msg
     = Move Hanoi.Disk
-    | MoveTo Hanoi.Pole
     | CancelMove
+    | DropOn Hanoi.Pole
 
 
 update : Msg -> Model -> Model
@@ -62,7 +62,7 @@ update msg model =
         Move selectedDisk ->
             { model | movingDisk = Just selectedDisk }
 
-        MoveTo newPole ->
+        DropOn newPole ->
             let
                 newPoles =
                     model.movingDisk
@@ -101,7 +101,7 @@ viewPole model pole diskList =
             if isDroppable then
                 ( [ ( "background-color", "#7CB342" ) ]
                 ,   [ attribute "ondragover" "return false"
-                    , onDrop <| MoveTo pole
+                    , onDrop <| DropOn pole
                     ]
                 )
             else
