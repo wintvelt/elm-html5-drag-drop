@@ -15,10 +15,11 @@ There are however some caveats. These are described in [this article on Medium.c
 
 ## Contents of this repo
 
-* /src
-  * `DragEvents.elm`  - custom handlers for all drag and drop events
+* `/src`
+  * `DragEvents.elm`  - custom elm handlers for all drag and drop events
+  * `DragEvents.md`  - overview of HTML5 drag and drop events
 
-* /examples
+* `/examples`
   * `Hanoi.elm`  - helpers for game logic
   * `Styles.elm` - helpers for styling game elements
   * `tutorial-finished.elm`  - example implementation of HTML5 drag and drop
