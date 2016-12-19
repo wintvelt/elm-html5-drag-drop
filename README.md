@@ -5,6 +5,13 @@
 - Clone this repository
 - Run with Elm-reactor
 
+```
+git clone https://github.com/wintvelt/elm-html5-drag-drop.git
+cd elm-html5-drag-drop
+cd examples
+elm-reactor
+```
+
 ## Background
 
 The official Elm site has a [drag and drop example](http://elm-lang.org/examples/drag), which uses the `mousedown` event to start a drag action, and subscriptions to `Mouse.moves` and `Mouse.ups`. The example is a nice and simple demonstration of using subscriptions. It shows how you can make your own custom handler for javascript events.
