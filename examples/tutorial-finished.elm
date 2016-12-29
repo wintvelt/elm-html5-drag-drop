@@ -137,6 +137,8 @@ viewDisk model idx disk =
                         ( [ ( "background-color", "#7CB342" ) ]
                         ,   [ attribute "draggable" "true"
                             , onDragStart <| Move disk
+                            , attribute "ondragstart"
+                                "event.dataTransfer.setData(\"text/plain\", \"dummy\")"
                             ]
                         )
                     else
