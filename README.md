@@ -1,4 +1,6 @@
 # Elm Drag and drop example using Html5 events
+> UPDATE: This repo was created before Elm 0.19, and appears to be broken in the latest version.
+> Hopefully I'll get around to updating it, but don't hold your breath..
 
 ## Installation
 
